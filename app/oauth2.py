@@ -1,7 +1,14 @@
 from app import db
 from app.model.user import User
 from authlib.oauth2.rfc6749 import grants
-from app.model.auth import OAuth2Token, OAuth2AuthorizationCode
+from authlib.integrations.sqla_oauth2 import (
+    create_query_client_func,
+    create_save_token_func
+)
+from authlib.integrations.flask_oauth2 import (
+    AuthorizationServer
+)
+from app.model.auth import OAuth2Client, OAuth2Token, OAuth2AuthorizationCode
 
 
 class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
@@ -68,3 +75,11 @@ class RefreshTokenGrant(grants.RefreshTokenGrant):
         credential.revoked = True
         db.session.add(credential)
         db.session.commit()
+
+
+query_client = create_query_client_func(db.session, OAuth2Client)
+save_token = create_save_token_func(db.session, OAuth2Token)
+authorization = AuthorizationServer(
+    query_client=query_client,
+    save_token=save_token
+)
