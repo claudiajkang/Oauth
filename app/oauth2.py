@@ -5,9 +5,11 @@ from authlib.integrations.sqla_oauth2 import (
     create_query_client_func,
     create_save_token_func,
     create_revocation_endpoint,
+    create_bearer_token_validator
 )
 from authlib.integrations.flask_oauth2 import (
-    AuthorizationServer
+    AuthorizationServer,
+    ResourceProtector
 )
 from authlib.oauth2.rfc7636 import CodeChallenge
 from app.model.auth import OAuth2Client, OAuth2Token, OAuth2AuthorizationCode
@@ -85,6 +87,7 @@ authorization = AuthorizationServer(
     query_client=query_client,
     save_token=save_token
 )
+require_oauth = ResourceProtector()
 
 
 def config_oauth(app):
@@ -98,3 +101,6 @@ def config_oauth(app):
 
     revocation_cls = create_revocation_endpoint(db.session, OAuth2Token)
     authorization.register_endpoint(revocation_cls)
+
+    bearer_cls = create_bearer_token_validator(db.session, OAuth2Token)
+    require_oauth.register_token_validator(bearer_cls())
