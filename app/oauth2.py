@@ -44,3 +44,11 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
 
     def authenticate_user(self, authorization_code):
         return User.query.get(authorization_code.user_id)
+
+
+class PasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
+    def authenticate_user(self, username, password):
+        user = User.query.filter_by(username=username).first()
+
+        if user is not None and user.check_password(password):
+            return user
