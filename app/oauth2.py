@@ -3,11 +3,13 @@ from app.model.user import User
 from authlib.oauth2.rfc6749 import grants
 from authlib.integrations.sqla_oauth2 import (
     create_query_client_func,
-    create_save_token_func
+    create_save_token_func,
+    create_revocation_endpoint,
 )
 from authlib.integrations.flask_oauth2 import (
     AuthorizationServer
 )
+from authlib.oauth2.rfc7636 import CodeChallenge
 from app.model.auth import OAuth2Client, OAuth2Token, OAuth2AuthorizationCode
 
 
@@ -83,3 +85,16 @@ authorization = AuthorizationServer(
     query_client=query_client,
     save_token=save_token
 )
+
+
+def config_oauth(app):
+    authorization.init_app(app)
+
+    authorization.register_grant(grants.ImplicitGrant)
+    authorization.register_grant(grants.ClientCredentialsGrant)
+    authorization.register_grant(AuthorizationCodeGrant, [CodeChallenge(required=True)])
+    authorization.register_grant(PasswordGrant)
+    authorization.register_grant(RefreshTokenGrant)
+
+    revocation_cls = create_revocation_endpoint(db.session, OAuth2Token)
+    authorization.register_endpoint(revocation_cls)
