@@ -30,3 +30,8 @@ def authorize():
         grant_user = None
 
     return authorization.create_authorization_response(grant_user=grant_user)
+
+
+@app.route('/oauth/token', methods=["POST"])
+def issue_token():
+    return authorization.create_token_response()
