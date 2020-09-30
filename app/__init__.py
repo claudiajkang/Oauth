@@ -9,3 +9,7 @@ db = SQLAlchemy(app)
 from app.model import *
 
 db.create_all()
+
+from app.oauth2 import config_oauth
+
+config_oauth(app)
