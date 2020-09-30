@@ -1,9 +1,10 @@
 from app import app
 from app.model.user import User
-from app.oauth2 import authorization
 from authlib.oauth2 import OAuth2Error
 from app.util.helpers import current_user
-from flask import request, url_for, render_template, redirect
+from app.oauth2 import authorization, require_oauth
+from authlib.integrations.flask_oauth2 import current_token
+from flask import request, url_for, render_template, redirect, jsonify
 
 
 @app.route('/oauth/authorize', methods=['GET', 'POST'])
@@ -40,3 +41,10 @@ def issue_token():
 @app.route('/oauth/revoke', methods=['POST'])
 def revoke_token():
     return authorization.create_endpoint_response('revocation')
+
+
+@app.route('/api/me')
+@require_oauth('profile')
+def api_me():
+    user = current_token.user
+    return jsonify(id=user.id, username=user.username)
