@@ -1,7 +1,7 @@
 from app import app, db
 from app.model.user import UserModel
 from flask import request, session
-from app.model.auth import OAuth2Client
+from app.model.auth import OAuth2ClientModel
 from app.util.helpers import current_user
 from flask import render_template, redirect
 
@@ -27,7 +27,7 @@ def home():
 
     user = current_user()
     if user:
-        clients = OAuth2Client.query.filter_by(user_id=user.id).all()
+        clients = OAuth2ClientModel.query.filter_by(user_id=user.id).all()
     else:
         clients = []
 

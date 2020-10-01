@@ -8,7 +8,7 @@ from authlib.integrations.sqla_oauth2 import (
 )
 from sqlalchemy import Column, Integer, ForeignKey
 
-class OAuth2Client(db.Model, OAuth2ClientMixin):
+class OAuth2ClientModel(db.Model, OAuth2ClientMixin):
     __tablename__ = 'oauth2_client'
 
     id = Column(
@@ -24,7 +24,7 @@ class OAuth2Client(db.Model, OAuth2ClientMixin):
     user = relationship('UserModel')
 
 
-class OAuth2AuthorizationCode(db.Model, OAuth2AuthorizationCodeMixin):
+class OAuth2AuthorizationCodeModel(db.Model, OAuth2AuthorizationCodeMixin):
     __tablename__ = 'oauth2_code'
 
     id = Column(
@@ -40,7 +40,7 @@ class OAuth2AuthorizationCode(db.Model, OAuth2AuthorizationCodeMixin):
     user = relationship('UserModel')
 
 
-class OAuth2Token(db.Model, OAuth2TokenMixin):
+class OAuth2TokenModel(db.Model, OAuth2TokenMixin):
     __tablename__ = 'oauth2_token'
 
     id = Column(

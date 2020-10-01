@@ -1,7 +1,7 @@
 import time
 from app import app, db
 from werkzeug.security import gen_salt
-from app.model.auth import OAuth2Client
+from app.model.auth import OAuth2ClientModel
 from app.util.helpers import current_user, split_by_crlf
 from flask import session, request, redirect, render_template
 
@@ -24,7 +24,7 @@ def create_client():
 
     client_id = gen_salt(24)
     client_id_issued_at = int(time.time())
-    client = OAuth2Client(
+    client = OAuth2ClientModel(
         client_id=client_id,
         client_id_issued_at=client_id_issued_at,
         user_id=user.id

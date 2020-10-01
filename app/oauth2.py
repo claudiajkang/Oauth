@@ -12,7 +12,7 @@ from authlib.integrations.flask_oauth2 import (
     ResourceProtector
 )
 from authlib.oauth2.rfc7636 import CodeChallenge
-from app.model.auth import OAuth2Client, OAuth2Token, OAuth2AuthorizationCode
+from app.model.auth import OAuth2ClientModel, OAuth2TokenModel, OAuth2AuthorizationCodeModel
 
 
 class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
@@ -25,7 +25,7 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
     def save_authorization_code(self, code, request):
         code_challenge = request.data.get('code_challenge')
         code_challenge_method = request.data.get('code_challenge_method')
-        auth_code = OAuth2AuthorizationCode(
+        auth_code = OAuth2AuthorizationCodeModel(
             code=code,
             client_id=request.client.client_id,
             redirect_uri=request.redirect_uri,
@@ -41,7 +41,7 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
         return auth_code
 
     def query_authorization_code(self, code, client):
-        auth_code = OAuth2AuthorizationCode.query.filter_by(
+        auth_code = OAuth2AuthorizationCodeModel.query.filter_by(
             code=code,
             client_id=client.client_id
         ).first()
@@ -67,7 +67,7 @@ class PasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
 
 class RefreshTokenGrant(grants.RefreshTokenGrant):
     def authenticate_refresh_token(self, refresh_token):
-        token = OAuth2Token.query.filter_by(refresh_token=refresh_token).first()
+        token = OAuth2TokenModel.query.filter_by(refresh_token=refresh_token).first()
 
         if token and token.is_refresh_token_active():
             return token
@@ -81,8 +81,8 @@ class RefreshTokenGrant(grants.RefreshTokenGrant):
         db.session.commit()
 
 
-query_client = create_query_client_func(db.session, OAuth2Client)
-save_token = create_save_token_func(db.session, OAuth2Token)
+query_client = create_query_client_func(db.session, OAuth2ClientModel)
+save_token = create_save_token_func(db.session, OAuth2TokenModel)
 authorization = AuthorizationServer(
     query_client=query_client,
     save_token=save_token
@@ -99,8 +99,8 @@ def config_oauth(app):
     authorization.register_grant(PasswordGrant)
     authorization.register_grant(RefreshTokenGrant)
 
-    revocation_cls = create_revocation_endpoint(db.session, OAuth2Token)
+    revocation_cls = create_revocation_endpoint(db.session, OAuth2TokenModel)
     authorization.register_endpoint(revocation_cls)
 
-    bearer_cls = create_bearer_token_validator(db.session, OAuth2Token)
+    bearer_cls = create_bearer_token_validator(db.session, OAuth2TokenModel)
     require_oauth.register_token_validator(bearer_cls())
