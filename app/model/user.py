@@ -2,7 +2,9 @@ from app import db
 from sqlalchemy import Column, String, Integer
 
 
-class User(db.Model):
+class UserModel(db.Model):
+    __tablename__ = 'user'
+
     id = Column(
         Integer,
         primary_key=True
