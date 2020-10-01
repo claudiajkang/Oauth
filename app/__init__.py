@@ -13,3 +13,5 @@ db.create_all()
 from app.oauth2 import config_oauth
 
 config_oauth(app)
+
+from app.route import *
