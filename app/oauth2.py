@@ -1,5 +1,5 @@
 from app import db
-from app.model.user import User
+from app.model.user import UserModel
 from authlib.oauth2.rfc6749 import grants
 from authlib.integrations.sqla_oauth2 import (
     create_query_client_func,
@@ -54,12 +54,12 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
         db.session.commit()
 
     def authenticate_user(self, authorization_code):
-        return User.query.get(authorization_code.user_id)
+        return UserModel.query.get(authorization_code.user_id)
 
 
 class PasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
     def authenticate_user(self, username, password):
-        user = User.query.filter_by(username=username).first()
+        user = UserModel.query.filter_by(username=username).first()
 
         if user is not None and user.check_password(password):
             return user
@@ -73,7 +73,7 @@ class RefreshTokenGrant(grants.RefreshTokenGrant):
             return token
 
     def authenticate_user(self, credential):
-        return User.query.get(credential.user_id)
+        return UserModel.query.get(credential.user_id)
 
     def revoke_old_credential(self, credential):
         credential.revoked = True

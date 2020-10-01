@@ -1,11 +1,11 @@
 from flask import session
-from app.model.user import User
+from app.model.user import UserModel
 
 
 def current_user():
     if 'id' in session:
         uid = session['id']
-        return User.query.get(uid)
+        return UserModel.query.get(uid)
     return None
 
 

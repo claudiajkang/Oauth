@@ -21,7 +21,7 @@ class OAuth2Client(db.Model, OAuth2ClientMixin):
         ForeignKey('user.id', ondelete='CASCADE')
     )
 
-    user = relationship('User')
+    user = relationship('UserModel')
 
 
 class OAuth2AuthorizationCode(db.Model, OAuth2AuthorizationCodeMixin):
@@ -37,7 +37,7 @@ class OAuth2AuthorizationCode(db.Model, OAuth2AuthorizationCodeMixin):
         ForeignKey('user.id', ondelete='CASCADE')
     )
 
-    user = relationship('User')
+    user = relationship('UserModel')
 
 
 class OAuth2Token(db.Model, OAuth2TokenMixin):
@@ -53,7 +53,7 @@ class OAuth2Token(db.Model, OAuth2TokenMixin):
         ForeignKey('user.id', ondelete='CASCADE')
     )
 
-    user = relationship('User')
+    user = relationship('UserModel')
 
     def is_refresh_token_active(self):
         if self.revoked:

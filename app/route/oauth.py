@@ -1,5 +1,5 @@
 from app import app
-from app.model.user import User
+from app.model.user import UserModel
 from authlib.oauth2 import OAuth2Error
 from app.util.helpers import current_user
 from app.oauth2 import authorization, require_oauth
@@ -23,7 +23,7 @@ def authorize():
 
     if not user and 'username' in request.form:
         username = request.form.get('username')
-        user = User.query.filter_by(username=username).first()
+        user = UserModel.query.filter_by(username=username).first()
 
     if request.form['confirm']:
         grant_user = user
