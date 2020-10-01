@@ -21,7 +21,7 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
         'client_secret_post',
         'none'
     ]
-
+    # code 발급 후 저장
     def save_authorization_code(self, code, request):
         code_challenge = request.data.get('code_challenge')
         code_challenge_method = request.data.get('code_challenge_method')
